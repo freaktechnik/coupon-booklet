@@ -1,0 +1,84 @@
+header {
+    background: #792f09;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+header h1 {
+    padding: 0;
+    margin: 0;
+    font-size: 1.2rem;
+    margin: 0.1em 0.5em;
+    line-height: 2;
+    font-weight: normal;
+}
+
+header button {
+    color: white;
+    background: transparent;
+    border: none;
+    height: 100%;
+}
+
+header button:hover,
+header button:active {
+    background: #411806;
+}
+
+section {
+    padding: 0 0.5em;
+}
+
+label {
+    display: block;
+}
+
+input,
+textarea {
+    width: 100%;
+}
+
+main > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+main > ul > li {
+    margin: 0;
+    padding: 0.5em;
+    background: #fbebd1;
+    color: black;
+}
+
+details > ul {
+    margin: 0;
+    padding: 0;
+}
+
+summary,
+details ul > li {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+summary::before {
+    color: #d97c7c;
+    font-size: 1.2em;
+    margin-right: 0.2em;
+    content: '+';
+}
+
+details[open] > summary::before {
+    content: '-'
+}
+
+summary > button,
+details .button-group {
+    margin-left: 0.5em;
+}

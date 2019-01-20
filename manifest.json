@@ -1,0 +1,35 @@
+{
+    "developer": {
+        "name": "Martin Giger",
+        "url": "https://humanoids.be"
+    },
+    "homepage_url": "https://github.com/freaktechnik/coupon-booklet",
+    "manifest_version": 2,
+    "version": "1.0.0",
+    "name": "Coupon Booklet",
+    "icons": {
+        "96": "coupon-booklet.svg"
+    },
+    "browser_action": {
+        "browser_style": true,
+        "default_icon": "coupon-booklet.svg",
+        "default_title": "Coupon Booklet",
+        "default_popup": "booklet.html"
+    },
+    "commands": {
+        "__execute_browser_action": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+B"
+            }
+        }
+    },
+    "permissions": [
+        "clipboardWrite",
+        "unlimitedStorage"
+    ],
+    "applications": {
+        "gecko": {
+            "id": "coupon-booklet@humanoids.be"
+        }
+    }
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Coupon Booklet</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="booklet.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1>Coupons</h1>
+            <button accesskey="A" class="browser-style" title="Add a new coupon" id="add">Add</button>
+        </header>
+        <main>
+            <ul>
+            </ul>
+        </main>
+        <section id="addcoupon" hidden>
+            <form>
+                <p class="browser-style">
+                    <label>Code</label>
+                    <input type="text" required id="code" placeholder="freeStuff1">
+                </p>
+                <p class="browser-style">
+                    <label>Website</label>
+                    <input type="url" required id="website" placeholder="https://example.com">
+                </p>
+                <p class="browser-style">
+                    <label>Expires (optional)</label>
+                    <input type="date" id="expiryDate">
+                </p>
+                <p class="browser-style">
+                    <label>Notes (optional)</label>
+                    <textarea id="notes" placeholder="Only one item, basket value of at least 30$ etc."></textarea>
+                </p>
+                <p>
+                    <button type="button" class="browser-style" title="Back to coupons list" id="back">Back</button>
+                    <button class="browser-style default">Add</button>
+                </p>
+            </form>
+        </section>
+    </body>
+</html>
