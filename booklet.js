@@ -17,31 +17,6 @@ function waitForRequest(request) {
     });
 }
 
-function expunge(database) {
-    // could do this in worker...
-    const transaction = database.transaction(STORE, 'readwrite');
-    const store = transaction.objectStore(STORE);
-    const index = store.index('expires');
-    const request = index.openCursor();
-    const start = new Date(0);
-    const end = new Date(Date.now() - 86400000);
-    return new Promise((resolve, reject) => {
-        request.addEventListener("success", (e) => {
-            const cursor = e.target.result;
-            if(cursor) {
-                if(cursor.value > start && cursor.value <= end) {
-                    waitForRequest(cursor.delete()).catch(console.error);
-                }
-                cursor.continue();
-            }
-            else {
-                resolve();
-            }
-        });
-        request.addEventListener("error", reject);
-    });
-}
-
 function ignoreWWW(host) {
     if(host.startsWith(WWW_PREFIX)) {
         return host.substr(WWW_PREFIX.length);
@@ -57,9 +32,7 @@ Promise.all([
     new Promise((resolve, reject) => {
         try {
             const request = window.indexedDB.open(STORE, 1);
-            resolve(waitForRequest(request)
-                .then((e) => Promise.all([ e, expunge(e.target.result) ]))
-                .then(([ e ]) => e.target.result));
+            resolve(waitForRequest(request));
         }
         catch(e) {
             reject(e);
@@ -70,7 +43,7 @@ Promise.all([
         document.addEventListener("DOMContentLoaded", resolve, LISTENER_OPTS);
     })
 ])
-    .then(([ database ]) => {
+    .then(([ { target: { result: database } } ]) => {
         const now = new Date();
         document.querySelector("#expiryDate").min = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
         function showAdd() {
