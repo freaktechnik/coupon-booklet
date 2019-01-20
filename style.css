@@ -96,3 +96,7 @@ details .button-group {
 .code {
     font-family: monospace;
 }
+
+.current summary .space {
+    font-weight: bold;
+}

@@ -25,11 +25,17 @@
     },
     "permissions": [
         "clipboardWrite",
-        "unlimitedStorage"
+        "unlimitedStorage",
+        "tabs"
     ],
     "applications": {
         "gecko": {
             "id": "coupon-booklet@humanoids.be"
         }
+    },
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
     }
 }

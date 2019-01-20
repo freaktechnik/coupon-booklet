@@ -6,7 +6,6 @@ const STORE = 'coupons';
 const WWW_PREFIX = 'www.';
 
 //TODO context menu item that pre-fills add form with selection and current URL
-//TODO highlight items for current host (and badge!)
 //TODO option to define URL aliases
 //TODO support coupon websites and pre-fill more info from that (content script)
 //TODO support being loaded in a sidebar and communicating with a potential popup
@@ -22,8 +21,25 @@ function expunge(database) {
     // could do this in worker...
     const transaction = database.transaction(STORE, 'readwrite');
     const store = transaction.objectStore(STORE);
-    const request = store.delete(IDBKeyRange.bound(new Date(0), new Date(Date.now() - 86400000), true, false));
-    return waitForRequest(request);
+    const index = store.index('expires');
+    const request = index.openCursor();
+    const start = new Date(0);
+    const end = new Date(Date.now() - 86400000);
+    return new Promise((resolve, reject) => {
+        request.addEventListener("success", (e) => {
+            const cursor = e.target.result;
+            if(cursor) {
+                if(cursor.value > start && cursor.value <= end) {
+                    waitForRequest(cursor.delete()).catch(console.error);
+                }
+                cursor.continue();
+            }
+            else {
+                resolve();
+            }
+        });
+        request.addEventListener("error", reject);
+    });
 }
 
 function ignoreWWW(host) {
@@ -33,22 +49,14 @@ function ignoreWWW(host) {
     return host;
 }
 
+function getHost(url) {
+    return (new URL(url)).hostname;
+}
+
 Promise.all([
     new Promise((resolve, reject) => {
         try {
             const request = window.indexedDB.open(STORE, 1);
-            request.addEventListener("upgradeneeded", (e) => {
-                const coupons = e.target.result.createObjectStore(STORE, {
-                    keyPath: 'id',
-                    autoIncrement: true
-                });
-                coupons.createIndex('pagecoupon', [
-                    'coupon',
-                    'host'
-                ], { unique: true });
-                coupons.createIndex('page', 'host', { unique: false });
-                coupons.createIndex('expires', 'expires', { unique: false });
-            }, { once: true, passive: true });
             resolve(waitForRequest(request)
                 .then((e) => Promise.all([ e, expunge(e.target.result) ]))
                 .then(([ e ]) => e.target.result));
@@ -85,7 +93,7 @@ Promise.all([
             e.preventDefault();
             const coupon = {
                 coupon: document.querySelector("#code").value,
-                host: (new URL(document.querySelector("#website").value)).hostname,
+                host: getHost(document.querySelector("#website").value),
                 notes: document.querySelector("#notes").value
             };
             const expiry = document.querySelector("#expiryDate");
@@ -113,8 +121,109 @@ Promise.all([
                 .catch(console.error);
         }
 
+        async function buildList(coupons, list) {
+            const [ currentTab ] = await browser.tabs.query({
+                active: true,
+                currentWindow: true
+            });
+            const currentHost = ignoreWWW(getHost(currentTab.url));
+            let addedSome = false;
+            let itemCount = 0;
+            for(const host in coupons) {
+                if(coupons.hasOwnProperty(host)) {
+                    addedSome = true;
+                    const hostItem = document.createElement("li");
+                    const hostDetails = document.createElement("details");
+                    if(currentHost == ignoreWWW(host)) {
+                        hostItem.classList.add('current');
+                        itemCount += coupons[host].length;
+                        hostDetails.open = true;
+                    }
+                    const hostSummary = document.createElement("summary");
+                    const mainTitle = document.createElement("span");
+                    mainTitle.classList.add('space');
+                    mainTitle.textContent = host;
+                    hostSummary.append(mainTitle);
+                    const open = document.createElement("button");
+                    open.classList.add('browser-style');
+                    open.textContent = 'visit';
+                    open.title = 'Open site in new tab';
+                    open.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        browser.tabs.create({
+                            url: `https://${host}`
+                        }).then(() => {
+                            window.close();
+                        });
+                    }, { passive: false, once: true });
+                    hostSummary.append(open);
+
+                    hostDetails.append(hostSummary);
+
+                    const couponCodes = document.createElement("ul");
+                    for(const code of coupons[host]) {
+                        const codeItem = document.createElement("li");
+                        const codeTitle = document.createElement("span");
+                        codeTitle.classList.add('space');
+                        codeTitle.classList.add('code');
+                        codeTitle.textContent = code.coupon;
+                        codeItem.append(codeTitle);
+
+                        const buttonGroup = document.createElement("span");
+                        if(code.expires > new Date(0)) {
+                            codeItem.title = `Expires ${code.expires.toLocaleDateString()}`;
+                            buttonGroup.append(document.createTextNode('⏰'));
+                        }
+                        if(code.notes) {
+                            if(codeItem.title) {
+                                codeItem.title += ' - ';
+                            }
+                            codeItem.title += code.notes;
+                            buttonGroup.append(document.createTextNode('🗒️'));
+                        }
+
+                        buttonGroup.classList.add('button-group');
+                        const copy = document.createElement("button");
+                        copy.textContent = "copy";
+                        copy.title = "Copy coupon code";
+                        copy.classList.add('browser-style');
+                        copy.classList.add('default');
+                        copy.addEventListener("click", () => {
+                            navigator.clipboard.writeText(code.coupon);
+                            //TODO tell the user that it was copied
+                        }, { passive: true });
+                        const remove = document.createElement("button");
+                        remove.textContent = '×';
+                        remove.title ="Delete coupon";
+                        remove.classList.add('browser-style');
+                        remove.addEventListener("click", () => {
+                            removeCoupon(code.id);
+                        }, { passive: true });
+                        buttonGroup.append(remove);
+                        buttonGroup.append(copy);
+                        codeItem.append(buttonGroup);
+
+                        couponCodes.append(codeItem);
+                    }
+
+                    hostDetails.append(couponCodes);
+                    hostItem.append(hostDetails)
+
+                    list.append(hostItem);
+                }
+            }
+            if(!addedSome) {
+                const empty = document.createElement("li");
+                empty.textContent = "No coupons saved yet. Add some with the button above.";
+                list.append(empty);
+            }
+            browser.browserAction.setBadgeText({
+                text: itemCount > 0 ? itemCount.toString() : "",
+                tabId: currentTab.id
+            });
+        }
+
         function loadCoupons() {
-            console.log("reload");
             const list = document.querySelector("main > ul");
             while(list.firstElementChild) {
                 list.firstElementChild.remove();
@@ -147,90 +256,7 @@ Promise.all([
                     cursor.continue();
                 }
                 else {
-                    let addedSome = false;
-                    for(const host in coupons) {
-                        if(coupons.hasOwnProperty(host)) {
-                            addedSome = true;
-                            const hostItem = document.createElement("li");
-                            const hostSummary = document.createElement("summary");
-                            const mainTitle = document.createElement("span");
-                            mainTitle.classList.add('space');
-                            mainTitle.textContent = host;
-                            hostSummary.append(mainTitle);
-                            const open = document.createElement("button");
-                            open.classList.add('browser-style');
-                            open.textContent = 'visit';
-                            open.title = 'Open site in new tab';
-                            open.addEventListener("click", (e) => {
-                                e.preventDefault();
-                                browser.tabs.create({
-                                    url: `https://${host}`
-                                }).then(() => {
-                                    window.close();
-                                });
-                            }, { passive: false, once: true });
-                            hostSummary.append(open);
-
-                            const hostDetails = document.createElement("details");
-                            hostDetails.append(hostSummary);
-
-                            const couponCodes = document.createElement("ul");
-                            for(const code of coupons[host]) {
-                                const codeItem = document.createElement("li");
-                                const codeTitle = document.createElement("span");
-                                codeTitle.classList.add('space');
-                                codeTitle.classList.add('code');
-                                codeTitle.textContent = code.coupon;
-                                codeItem.append(codeTitle);
-
-                                const buttonGroup = document.createElement("span");
-                                if(code.expires > new Date(0)) {
-                                    codeItem.title = `Expires ${code.expires.toLocaleDateString()}`;
-                                    buttonGroup.append(document.createTextNode('⏰'));
-                                }
-                                if(code.notes) {
-                                    if(codeItem.title) {
-                                        codeItem.title += ' - ';
-                                    }
-                                    codeItem.title += code.notes;
-                                    buttonGroup.append(document.createTextNode('🗒️'));
-                                }
-
-                                buttonGroup.classList.add('button-group');
-                                const copy = document.createElement("button");
-                                copy.textContent = "copy";
-                                copy.title = "Copy coupon code";
-                                copy.classList.add('browser-style');
-                                copy.classList.add('default');
-                                copy.addEventListener("click", () => {
-                                    navigator.clipboard.writeText(code.coupon);
-                                    //TODO tell the user that it was copied
-                                }, { passive: true });
-                                const remove = document.createElement("button");
-                                remove.textContent = '×';
-                                remove.title ="Delete coupon";
-                                remove.classList.add('browser-style');
-                                remove.addEventListener("click", () => {
-                                    removeCoupon(code.id);
-                                }, { passive: true });
-                                buttonGroup.append(remove);
-                                buttonGroup.append(copy);
-                                codeItem.append(buttonGroup);
-
-                                couponCodes.append(codeItem);
-                            }
-
-                            hostDetails.append(couponCodes);
-                            hostItem.append(hostDetails)
-
-                            list.append(hostItem);
-                        }
-                    }
-                    if(!addedSome) {
-                        const empty = document.createElement("li");
-                        empty.textContent = "No coupons saved yet. Add some with the button above.";
-                        list.append(empty);
-                    }
+                    buildList(coupons, list).catch(console.error);
                 }
             });
             request.addEventListener("error", (e) => {
