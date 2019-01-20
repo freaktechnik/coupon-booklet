@@ -3,6 +3,7 @@ const LISTENER_OPTS = {
     passive: true
 };
 const STORE = 'coupons';
+const WWW_PREFIX = 'www.';
 
 //TODO context menu item that pre-fills add form with selection and current URL
 //TODO highlight items for current host (and badge!)
@@ -23,6 +24,13 @@ function expunge(database) {
     const store = transaction.objectStore(STORE);
     const request = store.delete(IDBKeyRange.bound(new Date(0), new Date(Date.now() - 86400000), true, false));
     return waitForRequest(request);
+}
+
+function ignoreWWW(host) {
+    if(host.startsWith(WWW_PREFIX)) {
+        return host.substr(WWW_PREFIX.length);
+    }
+    return host;
 }
 
 Promise.all([
@@ -121,10 +129,21 @@ Promise.all([
                 const cursor = e.target.result;
                 if(cursor) {
                     const { value } = cursor;
-                    if(!coupons.hasOwnProperty(value.host)) {
-                        coupons[value.host] = [];
+                    let hostToUse = value.host;
+                    if(coupons.hasOwnProperty(ignoreWWW(value.host))) {
+                        hostToUse = ignoreWWW(value.host);
                     }
-                    coupons[value.host].push(value);
+                    else if(!coupons.hasOwnProperty(hostToUse)) {
+                        const withWWW = WWW_PREFIX + ignoreWWW(value.host);
+                        if(coupons.hasOwnProperty(withWWW)) {
+                            coupons[hostToUse] = coupons[withWWW];
+                            delete coupons[withWWW];
+                        }
+                        else {
+                            coupons[hostToUse] = [];
+                        }
+                    }
+                    coupons[hostToUse].push(value);
                     cursor.continue();
                 }
                 else {
