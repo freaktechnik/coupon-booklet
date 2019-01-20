@@ -20,7 +20,8 @@
         "__execute_browser_action": {
             "suggested_key": {
                 "default": "Ctrl+Shift+B"
-            }
+            },
+            "description": "Show coupons"
         }
     },
     "permissions": [
