@@ -5,7 +5,7 @@
     },
     "homepage_url": "https://github.com/freaktechnik/coupon-booklet",
     "manifest_version": 2,
-    "version": "1.0.1",
+    "version": "1.1.0",
     "name": "Coupon Booklet",
     "icons": {
         "96": "coupon-booklet.svg"
