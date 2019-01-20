@@ -3,6 +3,7 @@ const LISTENER_OPTS = {
     passive: true
 };
 const STORE = 'coupons';
+const DAY = 86400000;
 
 function waitForRequest(request) {
     return new Promise((resolve, reject) => {
@@ -17,7 +18,7 @@ function expunge(database) {
     const index = store.index('expires');
     const request = index.openCursor();
     const start = new Date(0);
-    const end = new Date(Date.now() - 86400000);
+    const end = new Date(Date.now() - DAY);
     return new Promise((resolve, reject) => {
         request.addEventListener("success", (e) => {
             const cursor = e.target.result;
@@ -36,8 +37,25 @@ function expunge(database) {
     });
 }
 
+function timeout(database) {
+    expunge(database).catch(console.error);
+    setInterval(() => {
+        expunge(database).catch(console.error);
+    }, DAY);
+}
+
+function getUntilMidnight() {
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+    return midnight.getTime() - Date.now()
+}
+
 const request = indexedDB.open(STORE, 1);
-//TODO should expunge every midnight
 waitForRequest(request)
-    .then(({ target: { result: database } }) => expunge(database))
+    .then(({ target: { result: database } }) => {
+        setTimeout(() => {
+            timeout(database);
+        }, getUntilMidnight());
+        return expunge(database);
+    })
     .catch(console.error);
