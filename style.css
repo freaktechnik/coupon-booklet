@@ -53,6 +53,10 @@ main > ul > li {
     color: black;
 }
 
+main > ul > li:not(:last-child) {
+    border-bottom: 1px dotted #d97c7c;
+}
+
 details > ul {
     margin: 0;
     padding: 0;
@@ -62,7 +66,6 @@ summary,
 details ul > li {
     display: inline-flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
     width: 100%;
 }
@@ -81,4 +84,15 @@ details[open] > summary::before {
 summary > button,
 details .button-group {
     margin-left: 0.5em;
+    margin-bottom: 0;
+}
+
+.space {
+    flex-grow: 1;
+    flex-shrink: 1;
+    text-overflow: ellipsis;
+}
+
+.code {
+    font-family: monospace;
 }

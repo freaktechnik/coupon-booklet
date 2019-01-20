@@ -134,7 +134,10 @@ Promise.all([
                             addedSome = true;
                             const hostItem = document.createElement("li");
                             const hostSummary = document.createElement("summary");
-                            hostSummary.append(document.createTextNode(host));
+                            const mainTitle = document.createElement("span");
+                            mainTitle.classList.add('space');
+                            mainTitle.textContent = host;
+                            hostSummary.append(mainTitle);
                             const open = document.createElement("button");
                             open.classList.add('browser-style');
                             open.textContent = 'visit';
@@ -155,18 +158,25 @@ Promise.all([
                             const couponCodes = document.createElement("ul");
                             for(const code of coupons[host]) {
                                 const codeItem = document.createElement("li");
-                                codeItem.append(document.createTextNode(code.coupon));
+                                const codeTitle = document.createElement("span");
+                                codeTitle.classList.add('space');
+                                codeTitle.classList.add('code');
+                                codeTitle.textContent = code.coupon;
+                                codeItem.append(codeTitle);
+
+                                const buttonGroup = document.createElement("span");
                                 if(code.expires > new Date(0)) {
                                     codeItem.title = `Expires ${code.expires.toLocaleDateString()}`;
+                                    buttonGroup.append(document.createTextNode('⏰'));
                                 }
                                 if(code.notes) {
                                     if(codeItem.title) {
                                         codeItem.title += ' - ';
                                     }
                                     codeItem.title += code.notes;
+                                    buttonGroup.append(document.createTextNode('🗒️'));
                                 }
 
-                                const buttonGroup = document.createElement("span");
                                 buttonGroup.classList.add('button-group');
                                 const copy = document.createElement("button");
                                 copy.textContent = "copy";
