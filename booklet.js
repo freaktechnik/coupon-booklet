@@ -144,7 +144,7 @@ Promise.all([
 
                         const buttonGroup = document.createElement("span");
                         if(code.expires > new Date(0)) {
-                            codeItem.title = `Expires ${code.expires.toLocaleDateString()}`;
+                            codeItem.title = `Valid through ${code.expires.toLocaleDateString()}`;
                             buttonGroup.append(document.createTextNode('⏰'));
                         }
                         if(code.notes) {
