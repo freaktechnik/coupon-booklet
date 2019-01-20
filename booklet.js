@@ -141,7 +141,7 @@ Promise.all([
                             const open = document.createElement("button");
                             open.classList.add('browser-style');
                             open.textContent = 'visit';
-                            open.title = 'Open coupon shop';
+                            open.title = 'Open site in new tab';
                             open.addEventListener("click", (e) => {
                                 e.preventDefault();
                                 browser.tabs.create({
@@ -224,6 +224,19 @@ Promise.all([
         document.querySelector("#add").addEventListener("click", showAdd, { passive: true });
         document.querySelector("form").addEventListener("submit", addCoupon, { passive: false });
         document.querySelector("#back").addEventListener("click", hideAdd, { passive: true });
+        document.documentElement.addEventListener("toggle", (e) => {
+            if(e.target.open) {
+                const details = document.querySelectorAll("details");
+                for(const detail of details) {
+                    if(!detail.isEqualNode(e.target) && detail.open) {
+                        detail.open = false;
+                    }
+                }
+            }
+        }, {
+            passive: true,
+            capture: true
+        });
         loadCoupons();
     })
     .catch(console.error);

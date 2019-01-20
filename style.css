@@ -48,7 +48,6 @@ main > ul {
 
 main > ul > li {
     margin: 0;
-    padding: 0.5em;
     background: #fbebd1;
     color: black;
 }
@@ -68,6 +67,7 @@ details ul > li {
     flex-direction: row;
     align-items: center;
     width: 100%;
+    padding: 0.5em;
 }
 
 summary::before {
