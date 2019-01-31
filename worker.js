@@ -23,7 +23,7 @@ function expunge(database) {
         request.addEventListener("success", (e) => {
             const cursor = e.target.result;
             if(cursor) {
-                if(cursor.value > start && cursor.value <= end) {
+                if(cursor.value.expires > start && cursor.value.expires <= end) {
                     waitForRequest(cursor.delete()).catch(console.error);
                 }
                 cursor.continue();
@@ -47,7 +47,7 @@ function timeout(database) {
 function getUntilMidnight() {
     const now = new Date();
     const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
-    return midnight.getTime() - Date.now()
+    return midnight.getTime() - Date.now();
 }
 
 const request = indexedDB.open(STORE, 1);

@@ -58,7 +58,7 @@ Promise.all([
             document.querySelector("ul").hidden = false;
             document.querySelector("header").hidden = false;
             document.querySelector("#add").hidden = false;
-            //TODO reset form
+            document.querySelector("form").reset();
             loadCoupons();
         }
 
@@ -188,6 +188,7 @@ Promise.all([
             if(!addedSome) {
                 const empty = document.createElement("li");
                 empty.textContent = "No coupons saved yet. Add some with the button above.";
+                empty.classList.add("empty");
                 list.append(empty);
             }
             browser.browserAction.setBadgeText({

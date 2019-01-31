@@ -27,7 +27,8 @@ header button:active {
     background: #411806;
 }
 
-section {
+section,
+.empty {
     padding: 0 0.5em;
 }
 
