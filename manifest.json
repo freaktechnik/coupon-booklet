@@ -6,14 +6,14 @@
     "homepage_url": "https://github.com/freaktechnik/coupon-booklet",
     "manifest_version": 2,
     "version": "1.1.1",
-    "name": "Coupon Booklet",
+    "name": "__MSG_extensionName__",
     "icons": {
         "96": "coupon-booklet.svg"
     },
     "browser_action": {
         "browser_style": true,
         "default_icon": "coupon-booklet.svg",
-        "default_title": "Coupon Booklet",
+        "default_title": "__MSG_extensionName__",
         "default_popup": "booklet.html"
     },
     "commands": {
@@ -21,7 +21,7 @@
             "suggested_key": {
                 "default": "Ctrl+Shift+B"
             },
-            "description": "Show coupons"
+            "description": "__MSG_shortcut__"
         }
     },
     "permissions": [
@@ -38,5 +38,6 @@
         "scripts": [
             "background.js"
         ]
-    }
+    },
+    "default_locale": "en"
 }

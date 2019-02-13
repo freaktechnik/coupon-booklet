@@ -1,0 +1,29 @@
+{
+    "extensionName": {
+        "message": "Coupon Booklet"
+    },
+    "shortcut": {
+        "message": "Show coupons"
+    },
+    "empty": {
+        "message": "No coupons saved yet. Add some with the button above."
+    },
+    "delete": {
+        "message": "Delete coupon"
+    },
+    "copy": {
+        "message": "Copy coupon code"
+    },
+    "valid": {
+        "message": "Valid through $DATE$",
+        "placeholders": {
+            "date": {
+                "content": "$1",
+                "example": "2019-01-11"
+            }
+        }
+    },
+    "open": {
+        "message": "Open site in new tab"
+    }
+}

@@ -120,7 +120,7 @@ Promise.all([
                     const open = document.createElement("button");
                     open.classList.add('browser-style');
                     open.textContent = 'visit';
-                    open.title = 'Open site in new tab';
+                    open.title = browser.i18n.getMessage("open");
                     open.addEventListener("click", (e) => {
                         e.preventDefault();
                         browser.tabs.create({
@@ -144,7 +144,7 @@ Promise.all([
 
                         const buttonGroup = document.createElement("span");
                         if(code.expires > new Date(0)) {
-                            codeItem.title = `Valid through ${code.expires.toLocaleDateString()}`;
+                            codeItem.title = browser.i18n.getMessage("valid", code.expires.toLocaleDateString());
                             buttonGroup.append(document.createTextNode('⏰'));
                         }
                         if(code.notes) {
@@ -158,7 +158,7 @@ Promise.all([
                         buttonGroup.classList.add('button-group');
                         const copy = document.createElement("button");
                         copy.textContent = "copy";
-                        copy.title = "Copy coupon code";
+                        copy.title = browser.i18n.getMessage("copy");
                         copy.classList.add('browser-style');
                         copy.classList.add('default');
                         copy.addEventListener("click", () => {
@@ -167,7 +167,7 @@ Promise.all([
                         }, { passive: true });
                         const remove = document.createElement("button");
                         remove.textContent = '×';
-                        remove.title ="Delete coupon";
+                        remove.title = browser.i18n.getMessage("delete");
                         remove.classList.add('browser-style');
                         remove.addEventListener("click", () => {
                             removeCoupon(code.id);
@@ -187,7 +187,7 @@ Promise.all([
             }
             if(!addedSome) {
                 const empty = document.createElement("li");
-                empty.textContent = "No coupons saved yet. Add some with the button above.";
+                empty.textContent = browser.i18n.getMessage("empty");
                 empty.classList.add("empty");
                 list.append(empty);
             }
