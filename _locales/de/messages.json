@@ -1,0 +1,29 @@
+{
+    "extensionName": {
+        "message": "Gutscheinbuch"
+    },
+    "shortcut": {
+        "message": "Zeige Gutschein"
+    },
+    "empty": {
+        "message": "Es wurden keine Gutscheine eingetragen. Füge welche mit dem Schalter oben hinzu."
+    },
+    "delete": {
+        "message": "Lösche Gutschein"
+    },
+    "copy": {
+        "message": "Kopiere Gutscheincode"
+    },
+    "valid": {
+        "message": "Gültig bis $DATE$",
+        "placeholders": {
+            "date": {
+                "content": "$1",
+                "example": "2019-01-11"
+            }
+        }
+    },
+    "open": {
+        "message": "Seite in neuem Tab öffnen"
+    }
+}
