@@ -22,19 +22,22 @@
                     <label for="code" data-l10n-id="code">Code</label>
                     <input type="text" required id="code" placeholder="freeStuff1" data-l10n-id="codeInput" data-l10n-attrs="placeholder" data-l10n-nocontent>
                 </p>
-                <p class="browser-style">
-                    <label for="website" data-l10n-id="website">Website</label>
+                <section class="browser-style">
+                    <div class="space-between">
+                        <label for="website" data-l10n-id="website">Website</label>
+                        <button id="useCurrent" class="browser-style" data-l10n-id="use-current">From current tab</button>
+                    </div>
                     <input type="url" required id="website" placeholder="https://example.com">
-                </p>
+                </section>
                 <p class="browser-style">
                     <label for="expiryDate" data-l10n-id="validLabel">Valid through (optional)</label>
                     <input type="date" id="expiryDate">
                 </p>
                 <p class="browser-style">
                     <label for="notes" data-l10n-id="note">Notes (optional)</label>
-                    <textarea id="notes" placeholder="Only one item, basket value of at least $30 etc." data-l10n-attrs="placeholder" data-l10n-id="noteArea" data-l10n-nocontent></textarea>
+                    <textarea id="notes" class="browser-style" placeholder="Only one item, basket value of at least $30 etc." data-l10n-attrs="placeholder" data-l10n-id="noteArea" data-l10n-nocontent></textarea>
                 </p>
-                <p>
+                <p class="space-between">
                     <button type="button" class="browser-style" title="Back to coupons list" id="back" data-l10n-id="back" data-l10n-attrs="title">Back</button>
                     <button class="browser-style default" data-l10n-id="add">Add</button>
                 </p>

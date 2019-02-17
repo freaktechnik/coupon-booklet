@@ -27,7 +27,7 @@ header button:active {
     background: #411806;
 }
 
-section,
+section:not(.browser-style),
 .empty {
     padding: 0 0.5em;
 }
@@ -100,4 +100,10 @@ details .button-group {
 
 .current summary .space {
     font-weight: bold;
+}
+
+.space-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
 }

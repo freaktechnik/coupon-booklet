@@ -56,5 +56,8 @@
     },
     "back_title": {
         "message": "Back to coupons list"
+    },
+    "use-current": {
+        "message": "From current tab"
     }
 }

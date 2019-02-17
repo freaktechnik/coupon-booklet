@@ -51,6 +51,7 @@ Promise.all([
             document.querySelector("ul").hidden = true;
             document.querySelector("header").hidden = true;
             document.querySelector("#add").hidden = true;
+            document.querySelector("#add").disabled = true;
         }
 
         function hideAdd() {
@@ -58,6 +59,7 @@ Promise.all([
             document.querySelector("ul").hidden = false;
             document.querySelector("header").hidden = false;
             document.querySelector("#add").hidden = false;
+            document.querySelector("#add").disabled = false;
             document.querySelector("form").reset();
             loadCoupons();
         }
@@ -117,6 +119,8 @@ Promise.all([
                     mainTitle.classList.add('space');
                     mainTitle.textContent = host;
                     hostSummary.append(mainTitle);
+                    // This is a button and not a link because a link would open in a new window instead of a tab
+                    // and the button styles would havee to be manually ported to it.
                     const open = document.createElement("button");
                     open.classList.add('browser-style');
                     open.textContent = 'visit';
@@ -244,6 +248,18 @@ Promise.all([
         document.querySelector("#add").addEventListener("click", showAdd, { passive: true });
         document.querySelector("form").addEventListener("submit", addCoupon, { passive: false });
         document.querySelector("#back").addEventListener("click", hideAdd, { passive: true });
+        document.querySelector("#useCurrent").addEventListener("click", function() {
+            browser.tabs.query({
+                active: true,
+                currentWindow: true
+            })
+                .then((tabs) => {
+                    if(tabs.length) {
+                        document.querySelector("#website").value = tabs[0].url;
+                    }
+                })
+                .catch(console.error);
+        }, { passive: true });
         document.documentElement.addEventListener("toggle", (e) => {
             if(e.target.open) {
                 const details = document.querySelectorAll("details");
