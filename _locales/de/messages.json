@@ -3,7 +3,7 @@
         "message": "Gutscheinbuch"
     },
     "shortcut": {
-        "message": "Zeige Gutschein"
+        "message": "Zeige Gutscheine"
     },
     "empty": {
         "message": "Es wurden keine Gutscheine eingetragen. Füge welche mit dem Schalter oben hinzu."
@@ -25,5 +25,36 @@
     },
     "open": {
         "message": "Seite in neuem Tab öffnen"
+    },
+    "add": {
+        "message": "Hinzufügen"
+    },
+    "add_title": {
+        "message": "Neuen Gutschein hinzufügen"
+    },
+    "code": {
+        "message": "Gutscheincode",
+        "description": "Label for coupon code entry field"
+    },
+    "codeInput_placeholder": {
+        "message": "meinRabatt01"
+    },
+    "website": {
+        "message": "Webseite"
+    },
+    "validLabel": {
+        "message": "Gültig bis (optional)"
+    },
+    "noteArea_placeholder": {
+        "message": " Nur ein Artikel, Warenkorbwert von mindestens 30 € etc. "
+    },
+    "note": {
+        "message": "Notizen (optional)"
+    },
+    "back": {
+        "message": "Zurück"
+    },
+    "back_title": {
+        "message": "Zurück zum Gutscheinbuch"
     }
 }

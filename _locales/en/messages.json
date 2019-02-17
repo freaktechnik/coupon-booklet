@@ -46,7 +46,7 @@
         "message": "Valid through (optional)"
     },
     "noteArea_placeholder": {
-        "message": "Only one item, basket value of at least 30$ etc."
+        "message": "Only one item, basket value of at least $$30 etc."
     },
     "note": {
         "message": "Notes (optional)"
