@@ -25,5 +25,36 @@
     },
     "open": {
         "message": "Open site in new tab"
+    },
+    "add": {
+        "message": "Add"
+    },
+    "add_title": {
+        "message": "Add a new coupon"
+    },
+    "code": {
+        "message": "Code",
+        "description": "Label for coupon code entry field"
+    },
+    "codeInput_placeholder": {
+        "message": "freeStuff1"
+    },
+    "website": {
+        "message": "Website"
+    },
+    "validLabel": {
+        "message": "Valid through (optional)"
+    },
+    "noteArea_placeholder": {
+        "message": "Only one item, basket value of at least 30$ etc."
+    },
+    "note": {
+        "message": "Notes (optional)"
+    },
+    "back": {
+        "message": "Back"
+    },
+    "back_title": {
+        "message": "Back to coupons list"
     }
 }

@@ -123,6 +123,7 @@ Promise.all([
                     open.title = browser.i18n.getMessage("open");
                     open.addEventListener("click", (e) => {
                         e.preventDefault();
+                        // Yes, we assume HTTPS here, but you shouldn't be shopping on HTTP sites to start with...
                         browser.tabs.create({
                             url: `https://${host}`
                         }).then(() => {

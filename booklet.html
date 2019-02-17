@@ -2,14 +2,15 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Coupon Booklet</title>
+        <title data-l10n-id="extensionName">Coupon Booklet</title>
         <link rel="stylesheet" href="style.css">
+        <script src="l10n.js"></script>
         <script src="booklet.js"></script>
     </head>
     <body>
         <header>
-            <h1>Coupon Booklet</h1>
-            <button accesskey="A" class="browser-style" title="Add a new coupon" id="add">Add</button>
+            <h1 data-l10n-id="extensionName">Coupon Booklet</h1>
+            <button accesskey="A" class="browser-style" title="Add a new coupon" id="add" data-l10n-id="add" data-l10n-attrs="title">Add</button>
         </header>
         <main>
             <ul>
@@ -18,24 +19,24 @@
         <section id="addcoupon" hidden>
             <form>
                 <p class="browser-style">
-                    <label for="code">Code</label>
-                    <input type="text" required id="code" placeholder="freeStuff1">
+                    <label for="code" data-l10n-id="code">Code</label>
+                    <input type="text" required id="code" placeholder="freeStuff1" data-l10n-id="codeInput" data-l10n-attrs="placeholder" data-l10n-nocontent>
                 </p>
                 <p class="browser-style">
-                    <label for="website">Website</label>
+                    <label for="website" data-l10n-id="website">Website</label>
                     <input type="url" required id="website" placeholder="https://example.com">
                 </p>
                 <p class="browser-style">
-                    <label for="expiryDate">Valid through (optional)</label>
+                    <label for="expiryDate" data-l10n-id="validLabel">Valid through (optional)</label>
                     <input type="date" id="expiryDate">
                 </p>
                 <p class="browser-style">
-                    <label for="notes">Notes (optional)</label>
-                    <textarea id="notes" placeholder="Only one item, basket value of at least 30$ etc."></textarea>
+                    <label for="notes" data-l10n-id="note">Notes (optional)</label>
+                    <textarea id="notes" placeholder="Only one item, basket value of at least 30$ etc." data-l10n-attrs="placeholder" data-l10n-id="noteArea" data-l10n-nocontent></textarea>
                 </p>
                 <p>
-                    <button type="button" class="browser-style" title="Back to coupons list" id="back">Back</button>
-                    <button class="browser-style default">Add</button>
+                    <button type="button" class="browser-style" title="Back to coupons list" id="back" data-l10n-id="back" data-l10n-attrs="title">Back</button>
+                    <button class="browser-style default" data-l10n-id="add">Add</button>
                 </p>
             </form>
         </section>
