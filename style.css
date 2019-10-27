@@ -15,11 +15,15 @@ header h1 {
     font-weight: normal;
 }
 
-header button {
+header button.browser-style {
     color: white;
     background: transparent;
     border: none;
+    line-height: 2.4rem;
     height: 100%;
+    margin-bottom: 0;
+    padding-top: 0.12rem;
+    padding-bottom: 0.12rem;
 }
 
 header button:hover,
