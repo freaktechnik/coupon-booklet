@@ -1,9 +1,12 @@
 const LISTENER_OPTS = {
-    once: true,
-    passive: true
-};
-const STORE = 'coupons';
-const DAY = 86400000;
+        once: true,
+        passive: true
+    },
+    STORE = 'coupons',
+    DAY = 86400000,
+    ONE = 1,
+    ZERO = 0,
+    DB_VERSION = 1;
 
 function waitForRequest(request) {
     return new Promise((resolve, reject) => {
@@ -13,15 +16,15 @@ function waitForRequest(request) {
 }
 
 function expunge(database) {
-    const transaction = database.transaction(STORE, 'readwrite');
-    const store = transaction.objectStore(STORE);
-    const index = store.index('expires');
-    const request = index.openCursor();
-    const start = new Date(0);
-    const end = new Date(Date.now() - DAY);
+    const transaction = database.transaction(STORE, 'readwrite'),
+        store = transaction.objectStore(STORE),
+        index = store.index('expires'),
+        request = index.openCursor(),
+        start = new Date(ZERO),
+        end = new Date(Date.now() - DAY);
     return new Promise((resolve, reject) => {
-        request.addEventListener("success", (e) => {
-            const cursor = e.target.result;
+        request.addEventListener("success", (event) => {
+            const cursor = event.target.result;
             if(cursor) {
                 if(cursor.value.expires > start && cursor.value.expires <= end) {
                     waitForRequest(cursor.delete()).catch(console.error);
@@ -45,12 +48,12 @@ function timeout(database) {
 }
 
 function getUntilMidnight() {
-    const now = new Date();
-    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+    const now = new Date(),
+        midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + ONE, ZERO, ZERO, ZERO, ZERO);
     return midnight.getTime() - Date.now();
 }
 
-const request = indexedDB.open(STORE, 1);
+const request = indexedDB.open(STORE, DB_VERSION);
 waitForRequest(request)
     .then(({ target: { result: database } }) => {
         setTimeout(() => {

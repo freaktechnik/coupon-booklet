@@ -1,10 +1,15 @@
-const STORE = 'coupons';
-const WWW_PREFIX = 'www.';
-const LISTENER_OPTS = { passive: true, once: true };
-const request = window.indexedDB.open(STORE, 1);
+const STORE = 'coupons',
+    DB_VERSION = 1,
+    NONE = 0,
+    WWW_PREFIX = 'www.',
+    LISTENER_OPTS = {
+        passive: true,
+        once: true
+    },
+    request = window.indexedDB.open(STORE, DB_VERSION);
 let database;
-request.addEventListener("upgradeneeded", (e) => {
-    const coupons = e.target.result.createObjectStore(STORE, {
+request.addEventListener("upgradeneeded", (event) => {
+    const coupons = event.target.result.createObjectStore(STORE, {
         keyPath: 'id',
         autoIncrement: true
     });
@@ -14,29 +19,21 @@ request.addEventListener("upgradeneeded", (e) => {
     ], { unique: true });
     coupons.createIndex('page', 'host', { unique: false });
     coupons.createIndex('expires', 'expires', { unique: false });
-}, { once: true, passive: true });
-waitForRequest(request)
-    .then((e) => {
-        database = e.target.result;
-        const expunger = new Worker(browser.runtime.getURL("worker.js"));
-        expunger.addEventListener("message", () => {
-            updateActiveTabs().catch(console.error);
-        }, { passive: true });
+}, {
+    once: true,
+    passive: true
+});
 
-        return updateActiveTabs();
-    })
-    .catch(console.error);
-
-function waitForRequest(request) {
+function waitForRequest(requestInstance) {
     return new Promise((resolve, reject) => {
-        request.addEventListener("success", resolve, LISTENER_OPTS);
-        request.addEventListener("error", reject, LISTENER_OPTS);
+        requestInstance.addEventListener("success", resolve, LISTENER_OPTS);
+        requestInstance.addEventListener("error", reject, LISTENER_OPTS);
     });
 }
 
 function ignoreWWW(host) {
     if(host.startsWith(WWW_PREFIX)) {
-        return host.substr(WWW_PREFIX.length);
+        return host.slice(WWW_PREFIX.length);
     }
     return host;
 }
@@ -46,15 +43,15 @@ function getHost(url) {
 }
 
 function getCount(url) {
-    const host = getHost(url);
-    const transaction = database.transaction(STORE);
-    const store = transaction.objectStore(STORE);
-    const index = store.index('page');
-    const request = index.openCursor();
+    const host = getHost(url),
+        transaction = database.transaction(STORE),
+        store = transaction.objectStore(STORE),
+        index = store.index('page'),
+        cursorRequest = index.openCursor();
     return new Promise((resolve, reject) => {
         let count = 0;
-        request.addEventListener("success", (e) => {
-            const cursor = e.target.result;
+        cursorRequest.addEventListener("success", (event) => {
+            const cursor = event.target.result;
             if(cursor) {
                 if(ignoreWWW(cursor.value.host) == host) {
                     ++count;
@@ -70,11 +67,11 @@ function getCount(url) {
 }
 
 async function updateTabCount(tab) {
-  const count = await getCount(tab.url);
-  browser.browserAction.setBadgeText({
-      text: count > 0 ? count.toString() : '',
-      tabId: tab.id
-  });
+    const count = await getCount(tab.url);
+    browser.browserAction.setBadgeText({
+        text: count > NONE ? count.toString() : '',
+        tabId: tab.id
+    });
 }
 
 async function updateActiveTabs() {
@@ -83,6 +80,18 @@ async function updateActiveTabs() {
     });
     return Promise.all(tabs.map(updateTabCount));
 }
+
+waitForRequest(request)
+    .then((event) => {
+        database = event.target.result;
+        const expunger = new Worker(browser.runtime.getURL("worker.js"));
+        expunger.addEventListener("message", () => {
+            updateActiveTabs().catch(console.error);
+        }, { passive: true });
+
+        return updateActiveTabs();
+    })
+    .catch(console.error);
 
 browser.tabs.onActivated.addListener(async ({ tabId }) => {
     const tab = await browser.tabs.get(tabId);
@@ -94,5 +103,5 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
         updateTabCount(tab);
     }
 }, {
-    urls: [ '<all_urls>' ]
+    urls: [ '<all_urls>' ] // eslint-disable-line xss/no-mixed-html
 });

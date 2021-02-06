@@ -9,7 +9,7 @@
  */
 
 function translateElementAttributes(element) {
-    const attrList = [
+    const attributeList = new Set([
             'abbr',
             'alt',
             'content',
@@ -20,24 +20,24 @@ function translateElementAttributes(element) {
             'style',
             'title',
             'value'
-        ],
-        ariaAttrMap = {
+        ]),
+        ariaAttributeMap = {
             'aria-label': 'ariaLabel',
             'aria-value-text': 'ariaValueText',
             'aria-moz-hint': 'ariaMozHint'
         },
-        attrSeparator = '_',
+        attributeSeparator = '_',
         presentAttributes = element.dataset.l10nAttrs.split(",");
 
     // Translate allowed attributes.
     for(const attribute of presentAttributes) {
         let data;
-        if(attrList.includes(attribute)) {
-            data = browser.i18n.getMessage(element.dataset.l10nId + attrSeparator + attribute);
+        if(attributeList.has(attribute)) {
+            data = browser.i18n.getMessage(element.dataset.l10nId + attributeSeparator + attribute);
         }
         // Translate ARIA attributes
-        else if(attribute in ariaAttrMap) {
-            data = browser.i18n.getMessage(element.dataset.l10nId + attrSeparator + ariaAttrMap[attribute]);
+        else if(attribute in ariaAttributeMap) {
+            data = browser.i18n.getMessage(element.dataset.l10nId + attributeSeparator + ariaAttributeMap[attribute]);
         }
 
         if(data && data != "??") {
@@ -46,12 +46,12 @@ function translateElementAttributes(element) {
     }
 }
 
-const C_TRANSLATE_VALUES = [
+const C_TRANSLATE_VALUES = new Set([
     'yes',
     'no'
-];
+]);
 function getTranslateState(element) {
-    if(element.hasAttribute("translate") && C_TRANSLATE_VALUES.includes(element.getAttribute("translate"))) {
+    if(element.hasAttribute("translate") && C_TRANSLATE_VALUES.has(element.getAttribute("translate"))) {
         return element.getAttribute("translate");
     }
     const closestTranslate = element.closest('[translate]:not([translate="inherit"])');

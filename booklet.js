@@ -1,9 +1,13 @@
 const LISTENER_OPTS = {
-    once: true,
-    passive: true
-};
-const STORE = 'coupons';
-const WWW_PREFIX = 'www.';
+        once: true,
+        passive: true
+    },
+    STORE = 'coupons',
+    DB_VERSION = 1,
+    WWW_PREFIX = 'www.',
+    DOUBLE_DIGIT = 2,
+    ONE = 1,
+    NONE = 0;
 
 //TODO context menu item that pre-fills add form with selection and current URL
 //TODO option to define URL aliases
@@ -19,7 +23,7 @@ function waitForRequest(request) {
 
 function ignoreWWW(host) {
     if(host.startsWith(WWW_PREFIX)) {
-        return host.substr(WWW_PREFIX.length);
+        return host.slice(WWW_PREFIX.length);
     }
     return host;
 }
@@ -31,11 +35,11 @@ function getHost(url) {
 Promise.all([
     new Promise((resolve, reject) => {
         try {
-            const request = window.indexedDB.open(STORE, 1);
+            const request = window.indexedDB.open(STORE, DB_VERSION);
             resolve(waitForRequest(request));
         }
-        catch(e) {
-            reject(e);
+        catch(error) {
+            reject(error);
             // can't open DB
         }
     }),
@@ -45,7 +49,8 @@ Promise.all([
 ])
     .then(([ { target: { result: database } } ]) => {
         const now = new Date();
-        document.querySelector("#expiryDate").min = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+        document.querySelector("#expiryDate").min = `${now.getFullYear()}-${(now.getMonth() + ONE).toString().padStart(DOUBLE_DIGIT, '0')}-${now.getDate().toString()
+            .padStart(DOUBLE_DIGIT, '0')}`;
         function showAdd() {
             document.querySelector("#addcoupon").hidden = false;
             document.querySelector("ul").hidden = true;
@@ -54,68 +59,35 @@ Promise.all([
             document.querySelector("#add").disabled = true;
         }
 
-        function hideAdd() {
-            document.querySelector("#addcoupon").hidden = true;
-            document.querySelector("ul").hidden = false;
-            document.querySelector("header").hidden = false;
-            document.querySelector("#add").hidden = false;
-            document.querySelector("#add").disabled = false;
-            document.querySelector("form").reset();
-            loadCoupons();
-        }
-
-        function addCoupon(e) {
-            e.preventDefault();
-            const coupon = {
-                coupon: document.querySelector("#code").value,
-                host: getHost(document.querySelector("#website").value),
-                notes: document.querySelector("#notes").value
-            };
-            const expiry = document.querySelector("#expiryDate");
-            if(expiry.value) {
-                coupon.expires = expiry.valueAsDate;
-            }
-            else {
-                coupon.expires = new Date(0);
-            }
-            const transaction = database.transaction(STORE, 'readwrite');
-            const store = transaction.objectStore(STORE);
-            const req = store.add(coupon);
-
-            waitForRequest(req)
-                .then(hideAdd)
-                .catch(console.error);
-        }
-
         function removeCoupon(id) {
-            const transaction = database.transaction(STORE, 'readwrite');
-            const store = transaction.objectStore(STORE);
-            const req = store.delete(id);
-            waitForRequest(req)
-                .then(loadCoupons)
+            const transaction = database.transaction(STORE, 'readwrite'),
+                store = transaction.objectStore(STORE),
+                request = store.delete(id);
+            waitForRequest(request)
+                .then(loadCoupons) //eslint-disable-line no-use-before-define
                 .catch(console.error);
         }
 
         async function buildList(coupons, list) {
             const [ currentTab ] = await browser.tabs.query({
-                active: true,
-                currentWindow: true
-            });
-            const currentHost = ignoreWWW(getHost(currentTab.url));
-            let addedSome = false;
-            let itemCount = 0;
+                    active: true,
+                    currentWindow: true
+                }),
+                currentHost = ignoreWWW(getHost(currentTab.url));
+            let addedSome = false,
+                itemCount = 0;
             for(const host in coupons) {
                 if(coupons.hasOwnProperty(host)) {
                     addedSome = true;
-                    const hostItem = document.createElement("li");
-                    const hostDetails = document.createElement("details");
+                    const hostItem = document.createElement("li"),
+                        hostDetails = document.createElement("details");
                     if(currentHost == ignoreWWW(host)) {
                         hostItem.classList.add('current');
                         itemCount += coupons[host].length;
                         hostDetails.open = true;
                     }
-                    const hostSummary = document.createElement("summary");
-                    const mainTitle = document.createElement("span");
+                    const hostSummary = document.createElement("summary"),
+                        mainTitle = document.createElement("span");
                     mainTitle.classList.add('space');
                     mainTitle.textContent = host;
                     hostSummary.append(mainTitle);
@@ -125,30 +97,35 @@ Promise.all([
                     open.classList.add('browser-style');
                     open.textContent = 'visit';
                     open.title = browser.i18n.getMessage("open");
-                    open.addEventListener("click", (e) => {
-                        e.preventDefault();
+                    open.addEventListener("click", (event) => {
+                        event.preventDefault();
                         // Yes, we assume HTTPS here, but you shouldn't be shopping on HTTP sites to start with...
                         browser.tabs.create({
                             url: `https://${host}`
-                        }).then(() => {
-                            window.close();
-                        });
-                    }, { passive: false, once: true });
+                        })
+                            .then(() => {
+                                window.close();
+                            })
+                            .catch(console.error);
+                    }, {
+                        passive: false,
+                        once: true
+                    });
                     hostSummary.append(open);
 
                     hostDetails.append(hostSummary);
 
                     const couponCodes = document.createElement("ul");
                     for(const code of coupons[host]) {
-                        const codeItem = document.createElement("li");
-                        const codeTitle = document.createElement("span");
+                        const codeItem = document.createElement("li"),
+                            codeTitle = document.createElement("span");
                         codeTitle.classList.add('space');
                         codeTitle.classList.add('code');
                         codeTitle.textContent = code.coupon;
                         codeItem.append(codeTitle);
 
                         const buttonGroup = document.createElement("span");
-                        if(code.expires > new Date(0)) {
+                        if(code.expires > new Date(NONE)) {
                             codeItem.title = browser.i18n.getMessage("valid", code.expires.toLocaleDateString());
                             buttonGroup.append(document.createTextNode('⏰'));
                         }
@@ -185,7 +162,7 @@ Promise.all([
                     }
 
                     hostDetails.append(couponCodes);
-                    hostItem.append(hostDetails)
+                    hostItem.append(hostDetails);
 
                     list.append(hostItem);
                 }
@@ -197,7 +174,7 @@ Promise.all([
                 list.append(empty);
             }
             browser.browserAction.setBadgeText({
-                text: itemCount > 0 ? itemCount.toString() : "",
+                text: itemCount > NONE ? itemCount.toString() : "",
                 tabId: currentTab.id
             });
         }
@@ -208,13 +185,13 @@ Promise.all([
                 list.firstElementChild.remove();
             }
 
-            const transaction = database.transaction(STORE);
-            const store = transaction.objectStore(STORE);
-            const request = store.openCursor();
-            const coupons = {};
+            const transaction = database.transaction(STORE),
+                store = transaction.objectStore(STORE),
+                request = store.openCursor(),
+                coupons = {};
 
-            request.addEventListener("success", (e) => {
-                const cursor = e.target.result;
+            request.addEventListener("success", (event) => {
+                const cursor = event.target.result;
                 if(cursor) {
                     const { value } = cursor;
                     let hostToUse = value.host;
@@ -238,33 +215,67 @@ Promise.all([
                     buildList(coupons, list).catch(console.error);
                 }
             });
-            request.addEventListener("error", (e) => {
+            request.addEventListener("error", (event) => {
                 //TODO handle erros
-                console.error(e);
+                console.error(event);
             });
+        }
+
+        function hideAdd() {
+            document.querySelector("#addcoupon").hidden = true;
+            document.querySelector("ul").hidden = false;
+            document.querySelector("header").hidden = false;
+            document.querySelector("#add").hidden = false;
+            document.querySelector("#add").disabled = false;
+            document.querySelector("form").reset();
+            loadCoupons();
+        }
+
+        function addCoupon(event) {
+            event.preventDefault();
+            const coupon = {
+                    coupon: document.querySelector("#code").value,
+                    host: getHost(document.querySelector("#website").value),
+                    notes: document.querySelector("#notes").value
+                },
+                expiry = document.querySelector("#expiryDate");
+            if(expiry.value) {
+                coupon.expires = expiry.valueAsDate;
+            }
+            else {
+                coupon.expires = new Date(NONE);
+            }
+            const transaction = database.transaction(STORE, 'readwrite'),
+                store = transaction.objectStore(STORE),
+                request = store.add(coupon);
+
+            waitForRequest(request)
+                .then(hideAdd)
+                .catch(console.error);
         }
 
         // init
         document.querySelector("#add").addEventListener("click", showAdd, { passive: true });
         document.querySelector("form").addEventListener("submit", addCoupon, { passive: false });
         document.querySelector("#back").addEventListener("click", hideAdd, { passive: true });
-        document.querySelector("#useCurrent").addEventListener("click", function() {
+        document.querySelector("#useCurrent").addEventListener("click", () => {
             browser.tabs.query({
                 active: true,
                 currentWindow: true
             })
                 .then((tabs) => {
                     if(tabs.length) {
-                        document.querySelector("#website").value = tabs[0].url;
+                        const [ firstTab ] = tabs;
+                        document.querySelector("#website").value = firstTab.url;
                     }
                 })
                 .catch(console.error);
         }, { passive: true });
-        document.documentElement.addEventListener("toggle", (e) => {
-            if(e.target.open) {
+        document.documentElement.addEventListener("toggle", (event) => {
+            if(event.target.open) {
                 const details = document.querySelectorAll("details");
                 for(const detail of details) {
-                    if(!detail.isEqualNode(e.target) && detail.open) {
+                    if(!detail.isEqualNode(event.target) && detail.open) {
                         detail.open = false;
                     }
                 }

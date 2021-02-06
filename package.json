@@ -1,0 +1,40 @@
+{
+  "name": "coupon-booklet",
+  "version": "1.0.0",
+  "description": "Store coupons for websites. No external websites involved. Just a specialized store. ",
+  "main": "background.js",
+  "scripts": {
+    "test": "npm run lint",
+    "lint": "npm run lint:js && npm run lint:webext",
+    "lint:js": "eslint --ext js,json .",
+    "lint:webext": "web-ext lint",
+    "build": "web-ext build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freaktechnik/coupon-booklet.git"
+  },
+  "author": "Martin Giger (https://humanoids.be)",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/freaktechnik/coupon-booklet/issues"
+  },
+  "homepage": "https://github.com/freaktechnik/coupon-booklet#readme",
+  "devDependencies": {
+    "@freaktechnik/eslint-config-extension": "^8.0.2",
+    "eslint": "^7.19.0",
+    "web-ext": "^5.5.0"
+  },
+  "browserslist": [
+    "last 1 firefox version",
+    "firefox esr"
+  ],
+  "webExt": {
+    "ignoreFiles": [
+      "package.json",
+      "package-lock.json",
+      ".tx",
+      "README.md"
+    ]
+  }
+}
