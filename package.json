@@ -23,7 +23,7 @@
   "devDependencies": {
     "@freaktechnik/eslint-config-extension": "^8.0.2",
     "eslint": "^7.21.0",
-    "web-ext": "^5.5.0"
+    "web-ext": "^6.0.0"
   },
   "browserslist": [
     "last 1 firefox version",
