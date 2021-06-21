@@ -22,7 +22,7 @@
   "homepage": "https://github.com/freaktechnik/coupon-booklet#readme",
   "devDependencies": {
     "@freaktechnik/eslint-config-extension": "^8.0.2",
-    "eslint": "^7.28.0",
+    "eslint": "^7.29.0",
     "web-ext": "^6.2.0"
   },
   "browserslist": [
