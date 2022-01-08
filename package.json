@@ -21,8 +21,9 @@
   },
   "homepage": "https://github.com/freaktechnik/coupon-booklet#readme",
   "devDependencies": {
-    "@freaktechnik/eslint-config-extension": "^8.0.2",
-    "eslint": "^7.32.0",
+    "@freaktechnik/eslint-config-extension": "^9.0.1",
+    "eslint": "^8.6.0",
+    "eslint-plugin-optimize-regex": "^1.2.1",
     "web-ext": "^6.6.0"
   },
   "browserslist": [
