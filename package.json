@@ -24,7 +24,7 @@
     "@freaktechnik/eslint-config-extension": "^9.0.1",
     "eslint": "^8.19.0",
     "eslint-plugin-optimize-regex": "^1.2.1",
-    "web-ext": "^7.1.0"
+    "web-ext": "^7.1.1"
   },
   "browserslist": [
     "last 1 firefox version",
