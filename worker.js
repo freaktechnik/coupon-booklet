@@ -4,7 +4,6 @@ const LISTENER_OPTS = {
     },
     STORE = 'coupons',
     DAY = 86400000,
-    ONE = 1,
     ZERO = 0,
     DB_VERSION = 1;
 
@@ -40,25 +39,7 @@ function expunge(database) {
     });
 }
 
-function timeout(database) {
-    expunge(database).catch(console.error);
-    setInterval(() => {
-        expunge(database).catch(console.error);
-    }, DAY);
-}
-
-function getUntilMidnight() {
-    const now = new Date(),
-        midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + ONE, ZERO, ZERO, ZERO, ZERO);
-    return midnight.getTime() - Date.now();
-}
-
 const request = indexedDB.open(STORE, DB_VERSION);
 waitForRequest(request)
-    .then(({ target: { result: database } }) => {
-        setTimeout(() => {
-            timeout(database);
-        }, getUntilMidnight());
-        return expunge(database);
-    })
+    .then(({ target: { result: database } }) => expunge(database))
     .catch(console.error);
