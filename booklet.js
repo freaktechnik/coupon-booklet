@@ -1,6 +1,6 @@
 const LISTENER_OPTS = {
         once: true,
-        passive: true
+        passive: true,
     },
     STORE = 'coupons',
     DB_VERSION = 1,
@@ -45,7 +45,7 @@ Promise.all([
     }),
     new Promise((resolve) => {
         document.addEventListener("DOMContentLoaded", resolve, LISTENER_OPTS);
-    })
+    }),
 ])
     .then(([ { target: { result: database } } ]) => {
         const now = new Date();
@@ -71,7 +71,7 @@ Promise.all([
         async function buildList(coupons, list) {
             const [ currentTab ] = await browser.tabs.query({
                     active: true,
-                    currentWindow: true
+                    currentWindow: true,
                 }),
                 currentHost = ignoreWWW(getHost(currentTab.url));
             let addedSome = false,
@@ -101,7 +101,7 @@ Promise.all([
                         event.preventDefault();
                         // Yes, we assume HTTPS here, but you shouldn't be shopping on HTTP sites to start with...
                         browser.tabs.create({
-                            url: `https://${host}`
+                            url: `https://${host}`,
                         })
                             .then(() => {
                                 window.close();
@@ -109,7 +109,7 @@ Promise.all([
                             .catch(console.error);
                     }, {
                         passive: false,
-                        once: true
+                        once: true,
                     });
                     hostSummary.append(open);
 
@@ -175,7 +175,7 @@ Promise.all([
             }
             browser.browserAction.setBadgeText({
                 text: itemCount > NONE ? itemCount.toString() : "",
-                tabId: currentTab.id
+                tabId: currentTab.id,
             });
         }
 
@@ -236,7 +236,7 @@ Promise.all([
             const coupon = {
                     coupon: document.querySelector("#code").value,
                     host: getHost(document.querySelector("#website").value),
-                    notes: document.querySelector("#notes").value
+                    notes: document.querySelector("#notes").value,
                 },
                 expiry = document.querySelector("#expiryDate");
             if(expiry.value) {
@@ -261,7 +261,7 @@ Promise.all([
         document.querySelector("#useCurrent").addEventListener("click", () => {
             browser.tabs.query({
                 active: true,
-                currentWindow: true
+                currentWindow: true,
             })
                 .then((tabs) => {
                     if(tabs.length) {
@@ -282,7 +282,7 @@ Promise.all([
             }
         }, {
             passive: true,
-            capture: true
+            capture: true,
         });
         loadCoupons();
     })

@@ -1,6 +1,6 @@
 const LISTENER_OPTS = {
         once: true,
-        passive: true
+        passive: true,
     },
     STORE = 'coupons',
     DAY = 86400000,

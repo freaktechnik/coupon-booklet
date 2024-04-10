@@ -7,7 +7,7 @@ const STORE = 'coupons',
     ZERO = 0,
     LISTENER_OPTS = {
         passive: true,
-        once: true
+        once: true,
     };
 
 function waitForRequest(requestInstance) {
@@ -22,17 +22,17 @@ async function getDatabase() {
     request.addEventListener("upgradeneeded", (event) => {
         const coupons = event.target.result.createObjectStore(STORE, {
             keyPath: 'id',
-            autoIncrement: true
+            autoIncrement: true,
         });
         coupons.createIndex('pagecoupon', [
             'coupon',
-            'host'
+            'host',
         ], { unique: true });
         coupons.createIndex('page', 'host', { unique: false });
         coupons.createIndex('expires', 'expires', { unique: false });
     }, {
         once: true,
-        passive: true
+        passive: true,
     });
     const event = await waitForRequest(request);
     return event.target.result;
@@ -80,7 +80,7 @@ async function updateTabCount(tab, database) {
     const count = await getCount(tab.url, database);
     browser.browserAction.setBadgeText({
         text: count > NONE ? count.toString() : '',
-        tabId: tab.id
+        tabId: tab.id,
     });
 }
 
@@ -90,7 +90,7 @@ async function updateActiveTabs(database) {
         database = await getDatabase(); // eslint-disable-line require-atomic-updates
     }
     const tabs = await browser.tabs.query({
-        active: true
+        active: true,
     });
     return Promise.all(tabs.map((tab) => updateTabCount(tab, database)));
 }
@@ -107,7 +107,7 @@ async function init() {
         midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + ONE, ZERO, ZERO, ZERO, ZERO);
     browser.alarms.create("expunge", {
         when: midnight.getTime(),
-        periodInMinutes: ONE_DAY_IN_MINUTES
+        periodInMinutes: ONE_DAY_IN_MINUTES,
     });
     const database = await getDatabase();
 
@@ -125,7 +125,7 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
         updateTabCount(tab);
     }
 }, {
-    urls: [ '<all_urls>' ] // eslint-disable-line xss/no-mixed-html
+    urls: [ '<all_urls>' ], // eslint-disable-line xss/no-mixed-html
 });
 
 browser.runtime.onInstalled.addListener((details) => {

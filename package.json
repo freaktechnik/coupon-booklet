@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npm run lint",
     "lint": "npm run lint:js && npm run lint:webext",
-    "lint:js": "eslint --ext js,json .",
+    "lint:js": "eslint .",
     "lint:webext": "web-ext lint",
     "build": "web-ext build"
   },
@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/freaktechnik/coupon-booklet#readme",
   "devDependencies": {
-    "@freaktechnik/eslint-config-extension": "^9.2.1",
+    "@freaktechnik/eslint-config-extension": "^10.0.3",
     "eslint": "^8.57.0",
     "eslint-plugin-optimize-regex": "^1.2.1",
     "web-ext": "^7.11.0"
@@ -37,5 +37,6 @@
       ".tx",
       "README.md"
     ]
-  }
+  },
+  "type": "module"
 }

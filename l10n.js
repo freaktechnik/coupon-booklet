@@ -19,12 +19,12 @@ function translateElementAttributes(element) {
             'srcdoc',
             'style',
             'title',
-            'value'
+            'value',
         ]),
         ariaAttributeMap = {
             'aria-label': 'ariaLabel',
             'aria-value-text': 'ariaValueText',
-            'aria-moz-hint': 'ariaMozHint'
+            'aria-moz-hint': 'ariaMozHint',
         },
         attributeSeparator = '_',
         presentAttributes = element.dataset.l10nAttrs.split(",");
@@ -48,7 +48,7 @@ function translateElementAttributes(element) {
 
 const C_TRANSLATE_VALUES = new Set([
     'yes',
-    'no'
+    'no',
 ]);
 function getTranslateState(element) {
     if(element.hasAttribute("translate") && C_TRANSLATE_VALUES.has(element.getAttribute("translate"))) {
@@ -87,7 +87,7 @@ if(document.readyState == "loading") {
     document.addEventListener("DOMContentLoaded", () => translateElement(), {
         capture: false,
         passive: true,
-        once: true
+        once: true,
     });
 }
 else {
