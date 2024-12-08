@@ -125,7 +125,7 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
         updateTabCount(tab);
     }
 }, {
-    urls: [ '<all_urls>' ], // eslint-disable-line xss/no-mixed-html
+    urls: [ '<all_urls>' ],
 });
 
 browser.runtime.onInstalled.addListener((details) => {
