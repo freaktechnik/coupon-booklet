@@ -18,7 +18,7 @@ function waitForRequest(requestInstance) {
 }
 
 async function getDatabase() {
-    const request = window.indexedDB.open(STORE, DB_VERSION);
+    const request = globalThis.indexedDB.open(STORE, DB_VERSION);
     request.addEventListener("upgradeneeded", (event) => {
         const coupons = event.target.result.createObjectStore(STORE, {
             keyPath: 'id',

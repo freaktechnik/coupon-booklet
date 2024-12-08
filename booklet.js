@@ -35,7 +35,7 @@ function getHost(url) {
 Promise.all([
     new Promise((resolve, reject) => {
         try {
-            const request = window.indexedDB.open(STORE, DB_VERSION);
+            const request = globalThis.indexedDB.open(STORE, DB_VERSION);
             resolve(waitForRequest(request));
         }
         catch(error) {
