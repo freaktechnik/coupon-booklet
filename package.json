@@ -38,8 +38,5 @@
       "README.md"
     ]
   },
-  "type": "module",
-  "dependencies": {
-    "@freaktechnik/eslint-config-browser": "^10.1.6"
-  }
+  "type": "module"
 }
