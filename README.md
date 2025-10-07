@@ -1,4 +1,4 @@
-# ![](coupon-booklet.svg) Coupon Booklet
+# ![Icon: Stylized brown book](coupon-booklet.svg) Coupon Booklet
 
 Store coupons for websites. No external websites involved. Just a specialized store.
 
