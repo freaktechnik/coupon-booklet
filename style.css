@@ -1,3 +1,9 @@
+body {
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+}
+
 header {
     background: #792f09;
     color: white;
@@ -8,14 +14,13 @@ header {
 
 header h1 {
     padding: 0;
-    margin: 0;
     font-size: 1.2rem;
     margin: 0.1em 0.5em;
     line-height: 2;
     font-weight: normal;
 }
 
-header button.browser-style {
+header button {
     color: white;
     background: transparent;
     border: none;
@@ -31,7 +36,9 @@ header button:active {
     background: #411806;
 }
 
-section:not(.browser-style),
+/* TODO fix add new form spacing and check items layout! */
+
+section,
 .empty {
     padding: 0 0.5em;
 }
@@ -43,6 +50,23 @@ label {
 input,
 textarea {
     width: 100%;
+    min-width: none;
+}
+
+button {
+    border-radius: 0;
+    padding: 0.3em;
+    border: 1px solid #3c3c3c;
+    font-size: 1em;
+}
+
+button.default {
+    background: rgb(44, 44, 169);
+    color: white;
+}
+
+button.default:hover, button.default:active {
+    background: rgb(33, 33, 241);
 }
 
 main > ul {

@@ -4,20 +4,19 @@
         "url": "https://humanoids.be"
     },
     "homepage_url": "https://github.com/freaktechnik/coupon-booklet",
-    "manifest_version": 2,
-    "version": "1.2.2",
+    "manifest_version": 3,
+    "version": "1.2.3",
     "name": "__MSG_extensionName__",
     "icons": {
         "96": "coupon-booklet.svg"
     },
-    "browser_action": {
-        "browser_style": true,
+    "action": {
         "default_icon": "coupon-booklet.svg",
         "default_title": "__MSG_extensionName__",
         "default_popup": "booklet.html"
     },
     "commands": {
-        "__execute_browser_action": {
+        "__execute_action": {
             "suggested_key": {
                 "default": "Ctrl+Shift+B"
             },
@@ -32,14 +31,17 @@
     ],
     "browser_specific_settings": {
         "gecko": {
-            "id": "coupon-booklet@humanoids.be"
+            "id": "coupon-booklet@humanoids.be",
+            "data_collection_permissions": {
+                "required": ["none"]
+            },
+            "strict_min_version": "134.0"
         }
     },
     "background": {
         "scripts": [
             "background.js"
-        ],
-        "persistent": false
+        ]
     },
     "default_locale": "en"
 }

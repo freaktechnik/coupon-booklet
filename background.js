@@ -78,7 +78,7 @@ async function getCount(url, database) {
 
 async function updateTabCount(tab, database) {
     const count = await getCount(tab.url, database);
-    browser.browserAction.setBadgeText({
+    browser.action.setBadgeText({
         text: count > NONE ? count.toString() : '',
         tabId: tab.id,
     });
