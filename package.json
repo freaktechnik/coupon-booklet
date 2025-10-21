@@ -1,6 +1,6 @@
 {
   "name": "coupon-booklet",
-  "version": "1.0.0",
+  "version": "1.2.4",
   "description": "Store coupons for websites. No external websites involved. Just a specialized store. ",
   "main": "background.js",
   "scripts": {
