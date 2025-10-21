@@ -89,8 +89,7 @@ async function init() {
             mainTitle.classList.add('space');
             mainTitle.textContent = host;
             // This is a button and not a link because a link would open in a new window instead of a tab
-            // and the button styles would havee to be manually ported to it.
-            open.classList.add('browser-style');
+            // and the button styles would have to be manually ported to it.
             open.textContent = 'visit';
             open.title = browser.i18n.getMessage("open");
             open.addEventListener("click", (event) => {
@@ -135,7 +134,6 @@ async function init() {
                 buttonGroup.classList.add('button-group');
                 copy.textContent = "copy";
                 copy.title = browser.i18n.getMessage("copy");
-                copy.classList.add('browser-style');
                 copy.classList.add('default');
                 copy.addEventListener("click", () => {
                     navigator.clipboard.writeText(code.coupon);
@@ -143,7 +141,6 @@ async function init() {
                 }, { passive: true });
                 remove.textContent = '×';
                 remove.title = browser.i18n.getMessage("delete");
-                remove.classList.add('browser-style');
                 remove.addEventListener("click", () => {
                     removeCoupon(code.id);
                 }, { passive: true });

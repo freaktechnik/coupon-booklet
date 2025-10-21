@@ -1,7 +1,11 @@
+:root {
+    --horizontal-padding: 0.5rem;
+}
+
 body {
     padding: 0;
     margin: 0;
-    font-family: sans-serif;
+    font: caption;
 }
 
 header {
@@ -18,6 +22,8 @@ header h1 {
     margin: 0.1em 0.5em;
     line-height: 2;
     font-weight: normal;
+    cursor: default;
+    user-select: none;
 }
 
 header button {
@@ -36,28 +42,33 @@ header button:active {
     background: #411806;
 }
 
-/* TODO fix add new form spacing and check items layout! */
-
-section,
+section:not(#websiteSection),
 .empty {
-    padding: 0 0.5em;
+    padding: 0 var(--horizontal-padding);
+    cursor: default;
+    user-select: none;
 }
 
 label {
     display: block;
+    cursor: default;
+    user-select: none;
 }
 
 input,
 textarea {
     width: 100%;
-    min-width: none;
+    font-size: 1em;
+    box-sizing: border-box;
 }
 
 button {
     border-radius: 0;
-    padding: 0.3em;
+    padding: 0 0.5rem;
+    line-height: 1.8;
     border: 1px solid #3c3c3c;
     font-size: 1em;
+    margin-bottom: 0.2rem;
 }
 
 button.default {
@@ -97,6 +108,9 @@ details ul > li {
     align-items: center;
     width: 100%;
     padding: 0.5em;
+    box-sizing: border-box;
+    cursor: default;
+    user-select: none;
 }
 
 summary::before {
@@ -114,6 +128,11 @@ summary > button,
 details .button-group {
     margin-left: 0.5em;
     margin-bottom: 0;
+}
+
+.button-group {
+    cursor: default;
+    user-select: none;
 }
 
 .space {
