@@ -3,8 +3,6 @@ const STORE = 'coupons',
     NONE = 0,
     WWW_PREFIX = 'www.',
     ONE_DAY_IN_MINUTES = 1440,
-    ONE = 1,
-    ZERO = 0,
     LISTENER_OPTS = {
         passive: true,
         once: true,
@@ -18,7 +16,7 @@ function waitForRequest(requestInstance) {
 }
 
 async function getDatabase() {
-    const request = globalThis.indexedDB.open(STORE, DB_VERSION);
+    const request = indexedDB.open(STORE, DB_VERSION);
     request.addEventListener("upgradeneeded", (event) => {
         const coupons = event.target.result.createObjectStore(STORE, {
             keyPath: 'id',
@@ -103,10 +101,13 @@ function runExpunge(database) {
 }
 
 async function init() {
-    const now = new Date(),
-        midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + ONE, ZERO, ZERO, ZERO, ZERO);
+    const now = Temporal.Now.zonedDateTimeISO(),
+        midnight = now.round({
+            smallestUnit: "day",
+            roundingMode: "floor",
+        });
     browser.alarms.create("expunge", {
-        when: midnight.getTime(),
+        when: midnight.epochMilliseconds,
         periodInMinutes: ONE_DAY_IN_MINUTES,
     });
     const database = await getDatabase();

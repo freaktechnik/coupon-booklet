@@ -5,8 +5,6 @@ const LISTENER_OPTS = {
     STORE = 'coupons',
     DB_VERSION = 1,
     WWW_PREFIX = 'www.',
-    DOUBLE_DIGIT = 2,
-    ONE = 1,
     NONE = 0;
 
 //TODO context menu item that pre-fills add form with selection and current URL
@@ -35,16 +33,15 @@ function getHost(url) {
 async function init() {
     const [ { target: { result: database } } ] = await Promise.all([
         Promise.try(() => {
-            const request = globalThis.indexedDB.open(STORE, DB_VERSION);
+            const request = indexedDB.open(STORE, DB_VERSION);
             return waitForRequest(request);
         }),
         new Promise((resolve) => {
             document.addEventListener("DOMContentLoaded", resolve, LISTENER_OPTS);
         }),
     ]),
-        now = new Date();
-    document.querySelector("#expiryDate").min = `${now.getFullYear()}-${(now.getMonth() + ONE).toString().padStart(DOUBLE_DIGIT, '0')}-${now.getDate().toString()
-        .padStart(DOUBLE_DIGIT, '0')}`;
+        now = Temporal.Now.plainDateISO();
+    document.querySelector("#expiryDate").min = now.toString({ calendarName: "never" });
     function showAdd() {
         document.querySelector("#addcoupon").hidden = false;
         document.querySelector("ul").hidden = true;
@@ -115,8 +112,7 @@ async function init() {
                     buttonGroup = document.createElement("span"),
                     copy = document.createElement("button"),
                     remove = document.createElement("button");
-                codeTitle.classList.add('space');
-                codeTitle.classList.add('code');
+                codeTitle.classList.add('space', 'code');
                 codeTitle.textContent = code.coupon;
 
                 if(code.expires > new Date(NONE)) {
@@ -248,20 +244,24 @@ async function init() {
             currentWindow: true,
         })
             .then((tabs) => {
-                if(tabs.length) {
-                    const [ firstTab ] = tabs;
-                    document.querySelector("#website").value = firstTab.url;
+                if(!tabs.length) {
+                    return;
                 }
+
+                const [ firstTab ] = tabs;
+                document.querySelector("#website").value = firstTab.url;
             })
             .catch(console.error);
     }, { passive: true });
     document.documentElement.addEventListener("toggle", (event) => {
-        if(event.target.open) {
-            const details = document.querySelectorAll("details");
-            for(const detail of details) {
-                if(!detail.isEqualNode(event.target) && detail.open) {
-                    detail.open = false;
-                }
+        if(!event.target.open) {
+            return;
+        }
+
+        const details = document.querySelectorAll("details");
+        for(const detail of details) {
+            if(!detail.isEqualNode(event.target) && detail.open) {
+                detail.open = false;
             }
         }
     }, {

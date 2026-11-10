@@ -1,8 +1,18 @@
 {
   "name": "coupon-booklet",
   "version": "1.2.4",
+  "private": true,
   "description": "Store coupons for websites. No external websites involved. Just a specialized store. ",
-  "main": "background.js",
+  "license": "MPL-2.0",
+  "repository": "github:freaktechnik/coupon-booklet",
+  "homepage": "https://github.com/freaktechnik/coupon-booklet#readme",
+  "bugs": "https://github.com/freaktechnik/coupon-booklet/issues",
+  "author": "Martin Giger (https://humanoids.be)",
+  "type": "module",
+  "main": "./background.js",
+  "engines": {
+    "node": ">= 22"
+  },
   "scripts": {
     "test": "npm run lint",
     "lint": "npm run lint:js && npm run lint:webext",
@@ -10,16 +20,6 @@
     "lint:webext": "web-ext lint",
     "build": "web-ext build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/freaktechnik/coupon-booklet.git"
-  },
-  "author": "Martin Giger (https://humanoids.be)",
-  "license": "MPL-2.0",
-  "bugs": {
-    "url": "https://github.com/freaktechnik/coupon-booklet/issues"
-  },
-  "homepage": "https://github.com/freaktechnik/coupon-booklet#readme",
   "devDependencies": {
     "@freaktechnik/eslint-config-extension": "^14.1.0",
     "eslint": "^10.14.0",
@@ -37,6 +37,5 @@
       ".tx",
       "README.md"
     ]
-  },
-  "type": "module"
+  }
 }
