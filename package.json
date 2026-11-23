@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@freaktechnik/eslint-config-extension": "^14.1.1",
-    "eslint": "^10.14.0",
+    "eslint": "^10.15.0",
     "eslint-plugin-optimize-regex": "^1.2.1",
     "web-ext": "^10.8.0"
   },
